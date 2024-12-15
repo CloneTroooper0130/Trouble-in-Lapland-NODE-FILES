@@ -1,0 +1,30 @@
+------------The team organization function + some trivial info--------------------
+local players = game.Players:GetPlayers()
+local playerCount = #players
+local teams = {}
+for _, t in pairs(game.Teams:GetChildren()) do
+	if t:IsA("Team") then
+		table.insert(teams, t)
+	end
+end
+game.Players.PlayerAdded:Connect(function(Player)
+	local increment = #Player
+	playerCount = playerCount + increment
+end)
+function organizeTeams()
+	local teamCount = #teams
+	if teamCount == 0 then
+		return
+	end
+	local teamSize = math.ceil(playerCount / teamCount)
+	for _, t in pairs(teams) do
+		t:ClearAllChildren()
+	end
+	for i = 1, playerCount do
+		local teamIndex = math.ceil(i / teamSize)
+		local team = teams[teamIndex]
+		local player = players[i]
+		player.Team = team
+		player.Neutral = false
+	end
+end
